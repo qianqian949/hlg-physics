@@ -1,0 +1,70 @@
+You are a research reasoning analyzer.
+
+Given the following research paper text, deconstruct it into a 
+three-level Hierarchical Logic Graph (HLG) that reveals the core 
+problem–formulation–solution structure.
+
+Output in valid JSON with the schema:
+
+{
+  "Level3": [ list of research field problems and challenges ],
+  "Level2": [ list of mathematical/conceptual frameworks and formulations ],
+  "Level1": [ list of concrete techniques, algorithms, or implementations ]
+}
+
+LEVEL DEFINITIONS:
+- **Level 3**: High-level research field problems and challenges (e.g., "model interpretability", "data scarcity", "computational efficiency")
+- **Level 2**: Mathematical/conceptual frameworks, formulations, and theoretical approaches (e.g., "optimization framework", "regularization theory", "probabilistic inference", "Markov Decision Process")
+- **Level 1**: Specific techniques and algorithms that implement the frameworks (e.g., "attention mechanism", "dropout", "gradient descent", "Adam optimizer")
+
+Rules:
+- Keep all node labels short (≤4 words).
+- Use clear, human-readable concept names.
+- Avoid direct text from the paper; rewrite as conceptual terms.
+- Focus on extracting ALL relevant concepts at each level.
+- Extract concepts that span the entire research contribution.
+- Think: "What problem?" (L3) → "How to frame it?" (L2) → "How to solve it?" (L1)
+
+Note: Relations between concepts will be identified in a separate analysis step.
+
+RELATION TYPES (for reference only):
+
+Problem-to-Formulation (Level 3 → Level 2):
+  "formulated-as"     - Problem is expressed as a mathematical/conceptual framework
+  "reduced-to"        - Problem is simplified or transformed into a formulation
+  "modeled-as"        - Problem is represented using a specific formulation
+
+Formulation-to-Solution (Level 2 → Level 1):
+  "solved-by"         - Formulation is addressed by a specific technique
+  "implemented-via"   - Formulation is realized through a technique
+  "optimized-by"      - Formulation is optimized using a technique
+
+Solution-to-Formulation (Level 1 → Level 2):
+  "implements"        - Technique realizes or executes a formulation
+  "approximates"      - Technique provides approximate solution to formulation
+
+Within-Level Relations:
+  "causes"            - Problem A leads to or creates Problem B (L3-L3)
+  "related-to"        - Concepts are connected or complementary (any level)
+  "improves"          - Technique/method A enhances B (L1-L1 or L2-L2)
+  "extends"           - Builds upon or generalizes another concept
+  "conflicts"         - Mutually exclusive or contradictory approaches
+  "is-part-of"        - Component belongs to larger system
+
+Dependencies:
+  "requires"          - Hard prerequisite (must have)
+  "enables"           - Soft prerequisite (makes possible)
+
+Evidence/Validation:
+  "validates"         - Experimental results confirm formulation/technique
+  "supports"          - Evidence provides backing
+
+Guidelines for choosing relations:
+- Cross-level connections follow: L3 Problems → L2 Formulations → L1 Solutions
+- Use "formulated-as" for how research problems are mathematically framed
+- Use "solved-by" / "implemented-via" for how formulations become concrete techniques
+- This creates a clear problem-solving narrative throughout the graph
+
+Return only the JSON output.
+
+

@@ -1,0 +1,110 @@
+You are a research reasoning analyzer.
+
+Given a list of concepts extracted from a research paper and the original paper text, your task is to identify ALL meaningful relations between these concepts **based on what the paper actually says**.
+
+EXTRACTED CONCEPTS:
+
+{nodes}
+
+ORIGINAL PAPER TEXT:
+
+{paper_text}
+
+YOUR TASK:
+
+1. Read the paper text carefully to understand how concepts relate to each other
+2. Find relations that are **explicitly stated or strongly implied** in the paper
+3. Ensure EVERY node has at least one connection (unless truly isolated in the paper)
+4. Ground your relations in paper evidence - NOT general knowledge
+5. Create relations that capture:
+   - How Level 3 problems relate to each other (e.g., one problem causes another, problems are related, one extends another)
+   - How Level 3 problems are formulated into Level 2 mathematical/conceptual frameworks (as described in paper)
+   - How Level 2 formulations are solved by Level 1 techniques (as stated in paper)
+   - How Level 1 techniques implement or realize Level 2 formulations (as discussed in paper)
+   - How concepts within the same level relate to each other (if paper mentions these connections)
+
+LEVEL DEFINITIONS:
+- Level 3: High-level research field problems and challenges
+- Level 2: Mathematical/conceptual formulations of those problems
+- Level 1: Specific techniques and algorithms that solve the formulated problems
+
+Output in valid JSON with the schema:
+
+{{
+  "Relations": [
+    {{
+      "source": "<concept from the provided list>",
+      "target": "<concept from the provided list>",
+      "relation": "<relation_type>",
+      "confidence": <1-10>,
+      "explanation": "<brief justification for this relation and confidence>"
+    }}
+  ],
+  "overall_confidence": <1-10>,
+  "overall_explanation": "<assessment of relation coverage and quality>"
+}}
+
+RELATION TYPES (choose the most specific or create your own):
+
+Problem-to-Formulation (Level 3 → Level 2):
+  "formulated-as"     - Problem is expressed as a mathematical/conceptual framework
+  "reduced-to"        - Problem is simplified or transformed into a formulation
+  "modeled-as"        - Problem is represented using a specific formulation
+
+Formulation-to-Solution (Level 2 → Level 1):
+  "solved-by"         - Formulation is addressed by a specific technique
+  "implemented-via"   - Formulation is realized through a technique
+  "optimized-by"      - Formulation is optimized using a technique
+
+Solution-to-Formulation (Level 1 → Level 2):
+  "implements"        - Technique realizes or executes a formulation
+  "approximates"      - Technique provides approximate solution to formulation
+
+Within-Level Relations:
+  "causes"            - One concept leads to or creates another (especially L3→L3: one problem causes another)
+  "related-to"        - Concepts are connected or complementary (any level, including L3→L3)
+  "improves"          - One concept enhances another (L1→L1, L2→L2, or L3→L3)
+  "extends"           - Builds upon or generalizes another concept (any level)
+  "conflicts"         - Mutually exclusive or contradictory approaches (any level)
+  "is-part-of"        - Component belongs to larger system (any level)
+  "contributes-to"    - One problem contributes to another broader problem (especially L3→L3)
+
+Dependencies:
+  "requires"          - Hard prerequisite (must have)
+  "enables"           - Soft prerequisite (makes possible)
+
+Evidence/Validation:
+  "validates"         - Experimental results confirm formulation/technique
+  "supports"          - Evidence provides backing
+
+Note: You can use other relation types if they better describe the relationship.
+
+CONFIDENCE SCORING:
+- Rate each relation confidence from 1-10 **based on paper evidence**:
+  * 9-10: Explicitly stated in the paper with clear evidence
+  * 7-8: Strongly implied by paper with good supporting context
+  * 5-6: Reasonable inference from paper content (not just concept names)
+  * 3-4: Weak inference from paper, somewhat speculative
+  * 1-2: Very weak connection in paper, mostly based on general knowledge
+
+IMPORTANT: Base confidence on PAPER EVIDENCE, not general knowledge of the concepts!
+
+IMPORTANT RULES:
+- Use exact concept names from the provided list (case-sensitive)
+- Base ALL relations on the paper text, not general knowledge
+- In explanations, briefly cite what the paper says (not what you know about the concepts)
+- Create comprehensive connections - aim for every node to have at least 1-2 edges
+- Focus on meaningful relationships that are grounded in the paper
+- **PAY SPECIAL ATTENTION to Level 3 → Level 3 relations**:
+  * If the paper discusses how one research problem relates to another (e.g., causes, contributes to, conflicts with)
+  * These connections are often found in Introduction, Related Work, or Discussion sections
+  * Example: "Data imbalance causes model generalization issues" → ("Data Imbalance" causes "Model Generalization")
+- Cross-level connections are especially important (Level 3 → Level 2 → Level 1):
+  * Problems should connect to their mathematical formulations
+  * Formulations should connect to techniques that implement them
+  * This creates a clear problem-solving narrative
+- If a concept truly cannot be connected based on paper text, explain why in overall_explanation
+- Do NOT infer relations just because concepts typically relate in research - use paper evidence!
+
+Return only the JSON output.
+
