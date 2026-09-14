@@ -352,7 +352,7 @@ def render_prompt_customization_ui(prompts_config):
             with col2:
                 if st.button("🔄 Reset to Default", key=f"reset_{session_key}"):
                     st.session_state[session_key] = ""
-                    st.experimental_rerun()
+                    st.rerun()
             
             # Text area for editing prompt
             current_prompt = st.session_state[session_key] if st.session_state[session_key] else default_prompt
@@ -378,7 +378,7 @@ def render_prompt_customization_ui(prompts_config):
             with col_save2:
                 if st.button("🗑️ Clear Custom Prompt", key=f"clear_{session_key}"):
                     st.session_state[session_key] = ""
-                    st.experimental_rerun()
+                    st.rerun()
             
             # Show character count
             st.caption(f"📊 Character count: {len(edited_prompt)}")

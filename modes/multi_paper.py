@@ -156,7 +156,7 @@ def render_multi_paper_mode():
                 with col3:
                     if st.button(f"🗑️", key=f"remove_{idx}"):
                         st.session_state.multi_papers = [p for p in st.session_state.multi_papers if p['name'] != uploaded_file.name]
-                        st.experimental_rerun()
+                        st.rerun()
             
             st.markdown("---")
             
@@ -446,7 +446,7 @@ def render_multi_paper_mode():
                     st.session_state.multi_graph_html = None
                     st.session_state.multi_papers = []
                     st.session_state.multi_processing_complete = False
-                    st.experimental_rerun()
+                    st.rerun()
         
         if not st.session_state.multi_graph_data:
             st.warning("⚠️ No multi-paper analysis data available")
